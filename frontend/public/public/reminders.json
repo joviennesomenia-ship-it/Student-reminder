@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1",
+    "title": "Welcome to Student Reminder",
+    "description": "This official list is managed directly by the admin.",
+    "dueDate": "2026-12-31",
+    "category": "General",
+    "completed": false
+  },
+  {
+    "id": "2",
+    "title": "Final Project Submission",
+    "description": "Make sure all documentation is polished.",
+    "dueDate": "2026-11-15",
+    "category": "Assignments",
+    "completed": false
+  }
+]
