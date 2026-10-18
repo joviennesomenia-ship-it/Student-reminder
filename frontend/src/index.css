@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme tokens are "R G B" channels. Presets are selected via <html data-theme="...">.
+   Contrast ratios are checked by scripts in the repo (see README, Themes). */
+:root,
+[data-theme='classic'] {
+  --color-primary: 29 78 216; /* royal blue */
+  --color-on-primary: 255 255 255;
+  --color-accent: 185 28 28; /* crimson */
+  --color-on-accent: 255 255 255;
+  --color-bg: 244 246 250;
+  --color-surface: 255 255 255;
+  --color-surface-2: 238 241 247;
+  --color-fg: 17 24 39;
+  --color-muted: 75 85 99;
+  --color-border: 223 228 238;
+  --color-danger: 185 28 28; /* always crimson: overdue and urgent */
+  --color-warn: 146 64 14;
+  --color-ok: 21 128 61;
+}
+[data-theme='ocean'] {
+  --color-ink: 6 50 80;
+  --color-primary: 3 105 161;
+  --color-accent: 15 118 110;
+  --color-bg: 240 249 252;
+  --color-surface-2: 226 241 247;
+  --color-border: 207 230 240;
+}
+[data-theme='forest'] {
+  --color-ink: 16 56 34;
+  --color-primary: 21 128 61;
+  --color-accent: 161 98 7;
+  --color-bg: 242 248 243;
+  --color-surface-2: 228 240 230;
+  --color-border: 208 228 212;
+}
+[data-theme='sunset'] {
+  --color-ink: 84 30 12;
+  --color-primary: 194 65 12;
+  --color-accent: 190 18 60;
+  --color-bg: 255 247 242;
+  --color-surface-2: 252 236 227;
+  --color-border: 245 219 205;
+}
+[data-theme='purple'] {
+  --color-ink: 40 14 90;
+  --color-primary: 109 40 217;
+  --color-accent: 162 28 175;
+  --color-bg: 247 244 253;
+  --color-surface-2: 238 232 250;
+  --color-border: 224 214 245;
+}
+[data-theme='graphite'] {
+  --color-ink: 17 24 39;
+  --color-primary: 55 65 81;
+  --color-accent: 220 38 38;
+  --color-bg: 243 244 246;
+  --color-surface-2: 233 235 239;
+  --color-border: 219 222 228;
+}
+[data-theme='dark'] {
+  --color-ink: 5 8 18;
+  --color-primary: 96 165 250;
+  --color-on-primary: 15 23 42;
+  --color-accent: 248 113 113;
+  --color-on-accent: 15 23 42;
+  --color-bg: 11 17 32;
+  --color-surface: 22 30 49;
+  --color-surface-2: 31 41 64;
+  --color-fg: 226 232 240;
+  --color-muted: 170 182 202;
+  --color-border: 46 58 84;
+  --color-danger: 248 113 113;
+  --color-warn: 251 191 36;
+  --color-ok: 74 222 128;
+}
+/* Custom theme: primary/accent set inline on <html> by the theme store; neutrals follow classic. */
+[data-theme='custom'] {
+  --color-ink: 7 26 66;
+  --color-bg: 244 246 250;
+  --color-surface-2: 238 241 247;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  html[data-theme='dark'] {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-bg font-sans text-fg antialiased;
+    /* animate theme switches with color transitions only */
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-property: color, background-color, border-color, fill, stroke, box-shadow, opacity,
+      transform;
+    transition-duration: 0.25s;
+    transition-timing-function: ease;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-bg;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

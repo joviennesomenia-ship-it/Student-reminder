@@ -1,0 +1,103 @@
+// Dev uses SQLite. For production switch provider to "postgresql" and set DATABASE_URL.
+// Enums are modelled as String and validated with Zod so the schema stays portable.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Subject {
+  id               String            @id @default(cuid())
+  name             String            @unique
+  emoji            String            @default("📘")
+  color            String            @default("#1d4ed8")
+  tasks            Task[]
+  performanceTasks PerformanceTask[]
+  reviewers        Reviewer[]
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @default("")
+  subjectId   String
+  subject     Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  dueAt       DateTime
+  priority    String   @default("MEDIUM") // LOW | MEDIUM | HIGH
+  pinned      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([dueAt])
+  @@index([subjectId])
+}
+
+model PerformanceTask {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @default("")
+  subjectId   String
+  subject     Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  dueAt       DateTime
+  rubricText  String?
+  rubricUrl   String?
+  pinned      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([dueAt])
+  @@index([subjectId])
+}
+
+model Reviewer {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @default("")
+  subjectId   String
+  subject     Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  tag         String   @default("") // topic or quarter, e.g. "Q2"
+  pinned      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([subjectId])
+}
+
+// Polymorphic attachment: ownerType is TASK | PERFORMANCE_TASK | REVIEWER.
+// The service layer removes these rows when their owner is deleted.
+model Attachment {
+  id        String   @id @default(cuid())
+  ownerType String
+  ownerId   String
+  kind      String // file | link
+  name      String
+  url       String
+  mimeType  String?
+  size      Int?
+  storageKey String? // file name (local) or provider id (cloud); null for links
+  createdAt DateTime @default(now())
+
+  @@index([ownerType, ownerId])
+  @@index([storageKey])
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @default("")
+  location    String   @default("")
+  startsAt    DateTime
+  endsAt      DateTime
+  pinned      Boolean  @default(false)
+
+  @@index([startsAt])
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  body      String
+  pinned    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
